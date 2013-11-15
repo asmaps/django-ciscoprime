@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p>
+<h4>Make a query</h4>
+<form method="GET">
+    <div class="form-group">
+        <label for="query">New request query:</label>
+        <input type="text" class="form-control" id="query" name="query" placeholder="Resource" value="{{ request.GET.query }}">
+    </div>
+    <div class="form-group">
+        <label for="query">Parameters:</label>
+        <input type="text" class="form-control" id="params" name="params" placeholder="Parameters" value="{{ request.GET.params }}">
+    </div>
+    <button type="submit" class="btn btn-success">Request</button>
+</form>
+<hr>
+{% if request_url %}
+    <strong>Requested URL:</strong> {{ request_url|urlize }}<br>
+    <h3>Pprint'ed response:</h3>
+    <pre>
+        {{ pprint_json|urlize }}
+    </pre>
+    <h3>Plain response:</h3>
+    <pre>
+        {{ response }}
+    </pre>
+{% else %}
+    <pre>No query string supplied</pre>
+{% endif %}
+</p>
+{% endblock %}
