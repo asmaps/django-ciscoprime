@@ -1,8 +1,9 @@
 from django.conf.urls import patterns, include, url
-from .views import ApiCallView, OverviewView
+from .views import ApiCallView, OverviewView, RoguesView
 
 urlpatterns = patterns('',
     url(r'^overview/$', OverviewView.as_view(), name='overview'),
     url(r'^api_call/$', ApiCallView.as_view(), name='api_call'),
+    url(r'^rogues/$', RoguesView.as_view(), name='rogues'),
 )
 

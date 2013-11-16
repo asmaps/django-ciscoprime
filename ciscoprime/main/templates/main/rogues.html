@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load status_tags %}
+
+{% block content %}
+<div class="text-center">
+    <div class="row">
+        <div class="col-lg-6 col-lg-offset-3 text-center well">
+            <h1><span class="label label-{{ rogues_count|yesno:'danger,success' }}">{{ rogues_count }}</span> Rogue AP{{ rogues_count|pluralize }} detected</h1>
+            Please use SC13 wifi and shutdown your own wifi.<br>
+            Thank you!
+        </div>
+    </div>
+    {% if request.GET.simpleview %}
+        {% for ap in rogues %}
+            {% if ap.ssid %}
+                <span style="margin:20px;font-size:20px;line-height:40px" class="label label-danger">{{ ap.ssid }}</span>
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SSID</th>
+                    <th>MAC</th>
+                    <th>Channel</th>
+                    <th>Detecting SC13 AP</th>
+                    <th>Radio type</th>
+                    <th>RSSI</th>
+                </tr>
+            </thead>
+            <tbody>
+        {% for ap in rogues %}
+                <tr>
+                    <td>{{ ap.ssid|default:"unknown" }}</td>
+                    <td>{{ ap.mac }}</td>
+                    <td>{{ ap.channel }}</td>
+                    <td>{{ ap.detecting_ap }}</td>
+                    <td>{{ ap.radio_type }}</td>
+                    <td>{{ ap.rssi }}</td>
+                </tr>
+        {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

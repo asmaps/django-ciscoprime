@@ -2,7 +2,7 @@ html, body {
   height: 100%;
 }
 
-body {
+.bigtext {
     font-size: 20px;
 }
 
@@ -33,4 +33,8 @@ body {
 
 .credit {
     margin: 0px;
+}
+
+th {
+    text-align: center;
 }

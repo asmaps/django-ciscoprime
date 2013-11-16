@@ -4,8 +4,48 @@ from django.conf import settings
 from braces.views import LoginRequiredMixin
 import requests
 import pprint
+import re
 
 from .utils import api_request
+
+
+class RoguesView(TemplateView):
+    template_name = 'main/rogues.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RoguesView, self).get_context_data(**kwargs)
+
+        #rogue APs
+        context['rogues'] = list()
+        rogues = list()
+        r = api_request(
+            'https://140.221.243.254/webacs/api/v1/data/Alarms.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")&.full=true')
+        if r.get('json_response'):
+            context['rogues_count'] = r['json_response']['queryResponse']['@count']
+            
+            reg = re.compile(".*Rogue AP '(?P<mac>.*)' with SSID '(?P<ssid>[^']*)' (and channel number '(?P<channel>.*)' )?is detected by AP '(?P<ap>.*)' Radio type '(?P<radio_type>.*)' with RSSI '(?P<rssi>.*)'.*")
+            
+            for entity in r['json_response']['queryResponse']['entity']:
+                print entity['alarmsDTO']['message']
+                m = reg.match(entity['alarmsDTO']['message'])
+                print m
+                if m:
+                    rogue = {
+                        'ssid': m.group('ssid'),
+                        'mac': m.group('mac'),
+                        'channel': m.group('channel'),
+                        'detecting_ap': m.group('ap'),
+                        'radio_type': m.group('radio_type'),
+                        'rssi': m.group('rssi')
+                    }
+                    rogues.append(rogue)
+                    #exclude duplicates
+                    a = []
+            for r in rogues:
+                if not r['ssid'] in a:
+                    context['rogues'].append(r)
+                    a.append(r['ssid'])
+        return context
 
 
 class OverviewView(TemplateView):
@@ -31,14 +71,10 @@ class OverviewView(TemplateView):
         context['ap'] = dict()
         context['ap']['highest_client_count_aps'] = list()
         r = api_request(
-            'https://140.221.243.254/webacs/api/v1/data/AccessPoints.json?.sort=-clientCount')
+            'https://140.221.243.254/webacs/api/v1/data/AccessPoints.json?.sort=-clientCount&.full=true')
         if r.get('json_response'):
             for i in range(5):
-                ap_id = r['json_response']['queryResponse']['entityId'][i]['$']
-                r2 = api_request(
-                'https://140.221.243.254/webacs/api/v1/data/AccessPoints/%d.json' % int(ap_id))
-                if r2.get('json_response'):
-                    context['ap']['highest_client_count_aps'].append(r2['json_response']['queryResponse']['entity'][0]['accessPointsDTO'])
+                context['ap']['highest_client_count_aps'].append(r['json_response']['queryResponse']['entity'][i]['accessPointsDTO'])
 
         #rogue APs
         context['ap']['rogues'] = list()
