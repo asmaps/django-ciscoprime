@@ -1,11 +1,12 @@
 from django.conf.urls import patterns, include, url
+from django.views.generic import RedirectView
+from django.core.urlresolvers import reverse
 
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'ciscoprime.views.home', name='home'),
+    url(r'^$', RedirectView.as_view(url='/main/overview/'), name='root'),
     url(r'^main/', include('main.urls')),
 
     url(r'^accounts/login/$', 'django.contrib.auth.views.login', {'template_name': 'main/login.html'}, name="accounts_login"),
