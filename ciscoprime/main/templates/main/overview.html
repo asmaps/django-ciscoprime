@@ -41,8 +41,7 @@
     <hr>
     <div class="row">
         <div class="col-lg-8 col-lg-offset-2 text-center">
-            {% with ap.highest_client_count as hcc %}
-            <h1>AP with the highest client count</h1>
+            <h1>Top 5 APs with the highest client count</h1>
             <table class="table">
                 <thead>
                     <tr>
@@ -54,6 +53,7 @@
                     </tr>
                 </thead>
                 <tbody>
+            {% for hcc in ap.highest_client_count_aps %}
                     <tr>
                         <td>{{ hcc.name }}</td>
                         <td>{{ hcc.location }}</td>
@@ -61,9 +61,9 @@
                         <td>{{ hcc.clientCount_2_4GHz }}</td>
                         <td>{{ hcc.clientCount_5GHz }}</td>
                     </tr>
+            {% endfor %}
                 </tbody>
             </table>
-            {% endwith %}
         </div>
     </div>
 {% endif %}

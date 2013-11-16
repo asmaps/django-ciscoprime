@@ -29,14 +29,16 @@ class OverviewView(TemplateView):
 
         #ap stats
         context['ap'] = dict()
+        context['ap']['highest_client_count_aps'] = list()
         r = api_request(
             'https://140.221.243.254/webacs/api/v1/data/AccessPoints.json?.sort=-clientCount')
         if r.get('json_response'):
-            most_clients_ap_id = r['json_response']['queryResponse']['entityId'][0]['$']
-            r2 = api_request(
-            'https://140.221.243.254/webacs/api/v1/data/AccessPoints/%d.json' % int(most_clients_ap_id))
-            if r2.get('json_response'):
-                context['ap']['highest_client_count'] = r2['json_response']['queryResponse']['entity'][0]['accessPointsDTO']
+            for i in range(5):
+                ap_id = r['json_response']['queryResponse']['entityId'][i]['$']
+                r2 = api_request(
+                'https://140.221.243.254/webacs/api/v1/data/AccessPoints/%d.json' % int(ap_id))
+                if r2.get('json_response'):
+                    context['ap']['highest_client_count_aps'].append(r2['json_response']['queryResponse']['entity'][0]['accessPointsDTO'])
         return context
 
 
