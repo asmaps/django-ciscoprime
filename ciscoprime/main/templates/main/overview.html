@@ -33,14 +33,14 @@
                 </div>
             {% endwith %}
         </div>
-        <div class="col-lg-6 col-lg-offset-1 text-center">
+        <div class="col-lg-6 col-lg-offset-1 text-center well">
             <h1>Current wifi client count</h1>
-            <h1><div class="well big"><strong>{{ clients.count }}</strong></div></h1>
+            <h1><span class="big"><strong>{{ clients.count }}</strong></span></h1>
         </div>
     </div>
     <hr>
     <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 text-center">
+        <div class="col-lg-8 text-center">
             <h1>Top 5 APs with the highest client count</h1>
             <table class="table">
                 <thead>
@@ -64,6 +64,12 @@
             {% endfor %}
                 </tbody>
             </table>
+        </div>
+        <div class="col-lg-4 text-center well">
+            <div style="padding:10px"><span class="big label label-{{ ap.rogues_count|yesno:'danger,success' }}">{{ ap.rogues_count }}</span></div>
+            <h1>Rogue AP{{ ap.rogues_count|pluralize }} detected</h1>
+            Please use SC13 wifi and shutdown your own wifi.<br>
+            Thank you!
         </div>
     </div>
 {% endif %}

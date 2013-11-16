@@ -39,6 +39,13 @@ class OverviewView(TemplateView):
                 'https://140.221.243.254/webacs/api/v1/data/AccessPoints/%d.json' % int(ap_id))
                 if r2.get('json_response'):
                     context['ap']['highest_client_count_aps'].append(r2['json_response']['queryResponse']['entity'][0]['accessPointsDTO'])
+
+        #rogue APs
+        context['ap']['rogues'] = list()
+        r = api_request(
+            'https://140.221.243.254/webacs/api/v1/data/Alarms.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")')
+        if r.get('json_response'):
+            context['ap']['rogues_count'] = r['json_response']['queryResponse']['@count']
         return context
 
 
