@@ -1,2 +1,4 @@
 django
 requests
+django-braces
+django-bootstrap-form

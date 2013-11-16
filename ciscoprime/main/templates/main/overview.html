@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load status_tags %}
+
+{% block content %}
+<div class="text-center">
+    <h1>WIFI status overview</h1>
+    <hr>
+{% if ctrl.error %}
+    <h3>{{ ctrl.error }}</h3>
+    <p>{{ ctrl.error_detail }}
+{% else %}
+    <div class="row">
+        <div class="col-lg-4 text-center">
+            {% with ctrl.entity.wlanControllersDTO as ctrl %}
+                <h1>Wifi-Controller</h1>
+                <div class="pull-left text-right">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Controller status:</td>
+                                <td><strong class="label label-{{ ctrl.reachabilityStatus|status_bootstrap }}">{{ ctrl.reachabilityStatus|yesno:'online,offline' }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Number of connected APs:</td>
+                                <td><strong class="label label-success">{{ ctrl.apCount }}</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Alarm status:</td>
+                                <td><strong class="label label-{{ ctrl.alarmStatus|status_bootstrap }}">{{ ctrl.alarmStatus }}</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            {% endwith %}
+        </div>
+        <div class="col-lg-6 col-lg-offset-1 text-center">
+            <h1>Current wifi client count</h1>
+            <h1><div class="well big"><strong>{{ clients.count }}</strong></div></h1>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 text-center">
+            {% with ap.highest_client_count as hcc %}
+            <h1>AP with the highest client count</h1>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Location</th>
+                        <th>Client count</th>
+                        <th>2.4 GHz</th>
+                        <th>5 GHz</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ hcc.name }}</td>
+                        <td>{{ hcc.location }}</td>
+                        <td>{{ hcc.clientCount }}</td>
+                        <td>{{ hcc.clientCount_2_4GHz }}</td>
+                        <td>{{ hcc.clientCount_5GHz }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endwith %}
+        </div>
+    </div>
+{% endif %}
+</div>
+{% endblock %}
