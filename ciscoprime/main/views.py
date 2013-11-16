@@ -26,9 +26,7 @@ class RoguesView(TemplateView):
             reg = re.compile(".*Rogue AP '(?P<mac>.*)' with SSID '(?P<ssid>[^']*)' (and channel number '(?P<channel>.*)' )?is detected by AP '(?P<ap>.*)' Radio type '(?P<radio_type>.*)' with RSSI '(?P<rssi>.*)'.*")
             
             for entity in r['json_response']['queryResponse']['entity']:
-                print entity['alarmsDTO']['message']
                 m = reg.match(entity['alarmsDTO']['message'])
-                print m
                 if m:
                     rogue = {
                         'ssid': m.group('ssid'),
