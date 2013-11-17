@@ -19,7 +19,7 @@ class RogueDetailView(TemplateView):
         context['rogues'] = list()
         context['events'] = list()
         r = api_request(
-            'https://140.221.243.254/webacs/api/v1/data/Events.json?.full=true&correlated="6215112"&severity=ne("CLEARED")')
+            'https://140.221.243.254/webacs/api/v1/data/Events.json?.full=true&correlated="%d"&severity=ne("CLEARED")' % int(self.kwargs.get('correlated', 0)))
         if r.get('json_response'):
             for entity in r['json_response']['queryResponse']['entity']:
                 try:
