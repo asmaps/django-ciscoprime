@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load status_tags %}
+
+{% block content %}
+<div class="text-center">
+    {% with events|first as event %}
+    <h3>Events for "{{ event.ssid }}" ({{ event.mac }})</h3>
+        {% endwith %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Time <a href="?sort=time"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+                <th>Channel</th>
+                <th>Detecting SC13 AP <a href="?sort=detecting_ap"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+                <th>Radio type</th>
+                <th>RSSI <a href="?sort=rssi"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% with request.GET.sort|default:'rssi' as sortby %}
+    {% for ap in events|dictsort:sortby %}
+            <tr>
+                <td>{{ ap.time }}</td>
+                <td>{{ ap.channel }}</td>
+                <td>{{ ap.detecting_ap }}</td>
+                <td>{{ ap.radio_type }}</td>
+                <td>{{ ap.rssi }}</td>
+            </tr>
+    {% endfor %}
+        {% endwith %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

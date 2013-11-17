@@ -31,7 +31,7 @@
             <tbody>
         {% for ap in rogues|dictsort:'detecting_ap' %}
                 <tr>
-                    <td>{{ ap.ssid|default:"unknown" }}</td>
+                    <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"unknown" }}</a></td>
                     <td>{{ ap.mac }}</td>
                     <td>{{ ap.channel }}</td>
                     <td>{{ ap.detecting_ap }}</td>

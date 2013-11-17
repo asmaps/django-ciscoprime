@@ -6,7 +6,33 @@ import requests
 import pprint
 import re
 
-from .utils import api_request
+from .utils import api_request, analyze_rogue_alert_msg
+
+
+class RogueDetailView(TemplateView):
+    template_name = 'main/rogue_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(RogueDetailView, self).get_context_data(**kwargs)
+
+        #rogue APs
+        context['rogues'] = list()
+        context['events'] = list()
+        r = api_request(
+            'https://140.221.243.254/webacs/api/v1/data/Events.json?.full=true&correlated="6215112"&severity=ne("CLEARED")')
+        if r.get('json_response'):
+            for entity in r['json_response']['queryResponse']['entity']:
+                try:
+                    event = analyze_rogue_alert_msg(entity['eventsDTO']['description'])
+                    event.update(
+                        {'id': entity['eventsDTO']['@id'],
+                        'time': entity['eventsDTO']['eventFoundAt']}
+                    )
+                    context['events'].append(event)
+                except ValueError:
+                    #FIXME
+                    print 'Non decodable rogue message "%s".'
+        return context
 
 
 class RoguesView(TemplateView):
@@ -22,23 +48,17 @@ class RoguesView(TemplateView):
             'https://140.221.243.254/webacs/api/v1/data/Alarms.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")&.full=true')
         if r.get('json_response'):
             context['rogues_count'] = r['json_response']['queryResponse']['@count']
-            
-            reg = re.compile(".*Rogue AP '(?P<mac>.*)' with SSID '(?P<ssid>[^']*)' (and channel number '(?P<channel>.*)' )?is detected by AP '(?P<ap>.*)' Radio type '(?P<radio_type>.*)' with RSSI '(?P<rssi>.*)'.*")
-            
             for entity in r['json_response']['queryResponse']['entity']:
-                m = reg.match(entity['alarmsDTO']['message'])
-                if m:
-                    rogue = {
-                        'ssid': m.group('ssid'),
-                        'mac': m.group('mac'),
-                        'channel': m.group('channel'),
-                        'detecting_ap': m.group('ap'),
-                        'radio_type': m.group('radio_type'),
-                        'rssi': m.group('rssi')
-                    }
+                try:
+                    rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
+                    rogue.update(
+                        {'id': entity['alarmsDTO']['@id']}
+                    )
                     rogues.append(rogue)
-                    #exclude duplicates
-                    a = []
+                except ValueError:
+                    #FIXME
+                    print 'Non decodable rogue message "%s".'
+            a = []
             for r in rogues:
                 if not r['ssid'] in a:
                     context['rogues'].append(r)
