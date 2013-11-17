@@ -59,10 +59,17 @@ class RoguesView(TemplateView):
                     #FIXME
                     print 'Non decodable rogue message "%s".'
             a = []
+            context['counts'] = dict()
             for r in rogues:
-                if not r['ssid'] in a:
+                if not r['ssid']:
+                    r['ssid'] = 'hidden'
+                if not r['ssid'] in a or not self.request.GET.get('simpleview'):
                     context['rogues'].append(r)
                     a.append(r['ssid'])
+                if not context['counts'].get(r['ssid']):
+                    context['counts'][r['ssid']] = 1
+                else:
+                    context['counts'][r['ssid']] = context['counts'].get(r['ssid']) + 1
         return context
 
 

@@ -13,7 +13,7 @@
     {% if request.GET.simpleview %}
         {% for ap in rogues %}
             {% if ap.ssid %}
-                <span style="margin:20px;font-size:20px;line-height:40px" class="label label-danger">{{ ap.ssid }}</span>
+                <span style="margin:20px;font-size:20px;line-height:40px" class="label label-danger">{{ ap.ssid }}{% if counts|keyvalue:ap.ssid > 1 %} <span style="font-size:10px;color:black">{{ counts|keyvalue:ap.ssid }} APs</span>{% endif %}</span>
             {% endif %}
         {% endfor %}
     {% else %}
@@ -23,7 +23,7 @@
                     <th>SSID</th>
                     <th>MAC</th>
                     <th>Channel</th>
-                    <th>Detecting SC13 AP</th>
+                    <th>Latest detecting SC13 AP</th>
                     <th>Radio type</th>
                     <th>RSSI</th>
                 </tr>
@@ -31,7 +31,7 @@
             <tbody>
         {% for ap in rogues|dictsort:'detecting_ap' %}
                 <tr>
-                    <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"unknown" }}</a></td>
+                    <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"hidden" }}</a></td>
                     <td>{{ ap.mac }}</td>
                     <td>{{ ap.channel }}</td>
                     <td>{{ ap.detecting_ap }}</td>

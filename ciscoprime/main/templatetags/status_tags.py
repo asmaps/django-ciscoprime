@@ -24,3 +24,7 @@ def status_bootstrap(value):
         return 'success'
     else:
         return 'danger'
+
+@register.filter
+def keyvalue(dict, key):    
+    return dict[key]
