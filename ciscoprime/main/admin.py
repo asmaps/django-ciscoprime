@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import DisabledClient, ClientCount
+
+admin.site.register(ClientCount)
+admin.site.register(DisabledClient)

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load status_tags %}
+
+{% block content %}
+<div class="text-center">
+    <h3>Disabled clients</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>MAC</th>
+                <th>Reason</th>
+                <th>Disabled at</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for c in object_list|dictsort:'mac' %}
+            <tr>
+                <td>{{ c.mac }}</td>
+                <td>{{ c.reason }}</td>
+                <td>{{ c.created }}</td>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

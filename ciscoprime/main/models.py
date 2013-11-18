@@ -18,3 +18,15 @@ class CiscoPrimeBaseModel(CiscoPrimeBaseModelNoCreatedBy):
 
 class ClientCount(CiscoPrimeBaseModelNoCreatedBy):
     count = models.IntegerField()
+
+    def __unicode__(self):
+        return "%d at %s" % (self.count, self.created)
+
+
+class DisabledClient(CiscoPrimeBaseModel):
+    mac = models.CharField(max_length=32)
+    reason = models.TextField()
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.mac, self.reason)
+

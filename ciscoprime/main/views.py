@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView
 from django.conf import settings
 from django.db.models import Max
 
@@ -8,8 +8,13 @@ import pprint
 import re
 import datetime
 
-from .models import ClientCount
+from .models import ClientCount, DisabledClient
 from .utils import api_request, analyze_rogue_alert_msg, best_rssi_for_correlated
+
+
+class DisabledClientsView(ListView):
+    model = DisabledClient
+    template_name = 'main/disabled_clients.html'
 
 
 class RogueDetailView(TemplateView):
@@ -113,17 +118,18 @@ class OverviewView(TemplateView):
             'https://140.221.243.254/webacs/api/v1/data/Clients.json?status="ASSOCIATED"')
         if context['clients']['response'].get('json_response'):
             context['clients']['count'] = int(context['clients']['response']['json_response']['queryResponse']['@count'])
+            
             #save client counts on our own because cisco api's ClientCounts output is 0
-            if ClientCount.objects.all().count() > 0 and not ClientCount.objects.all().order_by('-created')[0].count == context['clients']['count']:
-                ClientCount.objects.create(count=context['clients']['count'])
-                context['clients']['max_count_24'] = ClientCount.objects.filter(
-                        created__gt=(datetime.datetime.now() - datetime.timedelta(hours=24))
-                    ).order_by('-count')[0]
-                context['clients']['max_count_overall'] = ClientCount.objects.all().order_by('-count')[0]
-            else:
+            if ClientCount.objects.all().count() == 0:
                 cc = ClientCount.objects.create(count=context['clients']['count'])
                 context['clients']['max_count_24'] = cc
                 context['clients']['max_count_overall'] = cc
+            elif not ClientCount.objects.all().order_by('-created')[0].count == context['clients']['count']:
+                ClientCount.objects.create(count=context['clients']['count'])
+            context['clients']['max_count_24'] = ClientCount.objects.filter(
+                    created__gt=(datetime.datetime.now() - datetime.timedelta(hours=24))
+                ).order_by('-count')[0]
+            context['clients']['max_count_overall'] = ClientCount.objects.all().order_by('-count')[0]
 
         #ap stats
         context['ap'] = dict()

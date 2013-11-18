@@ -23,6 +23,7 @@
           <ul class="nav navbar-nav">
             <li><a href="{% url 'overview' %}">Overview</a></li>
             <li><a href="{% url 'rogues' %}">Rogue APs</a></li>
+            <li><a href="{% url 'disabled_clients' %}">Disabled Clients</a></li>
             <li><a href="{% url 'api_call' %}">API Call</a></li>
           </ul>
 
@@ -34,7 +35,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ request.user.username }} <b class="caret"></b></a>
                         <ul class="dropdown-menu">
                             {% if request.user.is_staff %}
-                                <li><a href="/admin/">Admin</a></li>
+                                <li><a href="{% url 'admin:index' %}">Admin</a></li>
                             {% endif %}
                             <li><a href="{% url 'accounts_logout' %}">Logout</a></li>
                         </ul>
