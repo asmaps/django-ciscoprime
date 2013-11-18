@@ -81,6 +81,8 @@ class RogueDetailView(TemplateView):
                 )
                 context['events'].append(rogue)
                 (context['rogue'], created) = RogueAP.objects.get_or_create(ssid=rogue['ssid'], mac=rogue['mac'], defaults={'correlated': entity['alarmsDTO']['@id']})
+                context['rogue'].correlated = entity['alarmsDTO']['@id']
+                context['rogue'].save()
             except ValueError:
                 #FIXME
                 print 'Non decodable rogue message "%s".'
