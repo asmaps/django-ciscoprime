@@ -19,6 +19,10 @@
                 <td>{{ c.reason }}</td>
                 <td>{{ c.created }}</td>
             </tr>
+    {% empty %}
+            <tr>
+                <td colspan="3">Currently no disabled clients! Very good.</td>
+            </tr>
     {% endfor %}
         </tbody>
     </table>
