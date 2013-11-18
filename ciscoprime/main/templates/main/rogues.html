@@ -33,7 +33,7 @@
                 <tr>
                     <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"hidden" }}</a></td>
                     <td>{{ ap.mac }}</td>
-                    <td>{{ ap.channel }}</td>
+                    <td>{{ ap.channel|default:'?' }}</td>
                     <td>{{ ap.detecting_ap }}</td>
                     <td>{{ ap.radio_type }}</td>
                     <td>{{ ap.rssi }}</td>

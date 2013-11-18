@@ -26,12 +26,27 @@ class RogueDetailView(TemplateView):
                     event = analyze_rogue_alert_msg(entity['eventsDTO']['description'])
                     event.update(
                         {'id': entity['eventsDTO']['@id'],
-                        'time': entity['eventsDTO']['eventFoundAt']}
+                        'time': entity['eventsDTO']['timeStamp']}
                     )
                     context['events'].append(event)
                 except ValueError:
                     #FIXME
                     print 'Non decodable rogue message "%s".'
+        #add alarm
+        r = api_request(
+            'https://140.221.243.254/webacs/api/v1/data/Alarms/%d.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")&.full=true' % int(self.kwargs.get('correlated', 0)))
+        if r.get('json_response'):
+            entity = r['json_response']['queryResponse']['entity'][0]
+            try:
+                rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
+                rogue.update(
+                    {'id': entity['alarmsDTO']['@id'],
+                    'time': entity['alarmsDTO']['timeStamp']}
+                )
+                context['events'].append(rogue)
+            except ValueError:
+                #FIXME
+                print 'Non decodable rogue message "%s".'
         return context
 
 
