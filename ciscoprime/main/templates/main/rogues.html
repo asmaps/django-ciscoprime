@@ -20,16 +20,17 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>SSID</th>
-                    <th>MAC</th>
+                    <th>SSID <a href="?sort=ssid"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+                    <th>MAC <a href="?sort=mac"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
                     <th>Channel</th>
-                    <th>Latest detecting SC13 AP</th>
+                    <th>Latest detecting SC13 AP <a href="?sort=detecting_ap"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
                     <th>Radio type</th>
-                    <th>RSSI</th>
+                    <th>RSSI <a href="?sort=rssi"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
                 </tr>
             </thead>
             <tbody>
-        {% for ap in rogues|dictsort:'detecting_ap' %}
+            {% with request.GET.sort|default:'detecting_ap' as sortby %}
+        {% for ap in rogues|dictsort:sortby %}
                 <tr>
                     <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"hidden" }}</a></td>
                     <td>{{ ap.mac }}</td>
@@ -39,6 +40,7 @@
                     <td>{{ ap.rssi }}</td>
                 </tr>
         {% endfor %}
+            {% endwith %}
             </tbody>
         </table>
     {% endif %}

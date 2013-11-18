@@ -16,7 +16,7 @@
     {% for c in object_list|dictsort:'mac' %}
             <tr>
                 <td>{{ c.mac }}</td>
-                <td>{{ c.reason }}</td>
+                <td>{{ c.reason|linebreaks }}</td>
                 <td>{{ c.created }}</td>
             </tr>
     {% empty %}

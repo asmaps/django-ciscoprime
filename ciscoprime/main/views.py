@@ -1,4 +1,4 @@
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, CreateView
 from django.conf import settings
 from django.db.models import Max
 
@@ -8,8 +8,13 @@ import pprint
 import re
 import datetime
 
-from .models import ClientCount, DisabledClient
+from .models import ClientCount, DisabledClient, RogueAP, TrackedRogue
 from .utils import api_request, analyze_rogue_alert_msg, best_rssi_for_correlated
+
+
+class FoundRogueView(CreateView):
+    template_name = 'main/found_rogue.html'
+    model = TrackedRogue
 
 
 class DisabledClientsView(ListView):
@@ -52,6 +57,7 @@ class RogueDetailView(TemplateView):
                     'time': entity['alarmsDTO']['timeStamp']}
                 )
                 context['events'].append(rogue)
+                (context['rogue'], created) = RogueAP.objects.get_or_create(ssid=rogue['ssid'],mac=rogue['mac'])
             except ValueError:
                 #FIXME
                 print 'Non decodable rogue message "%s".'

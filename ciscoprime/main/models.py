@@ -30,3 +30,21 @@ class DisabledClient(CiscoPrimeBaseModel):
     def __unicode__(self):
         return "%s (%s)" % (self.mac, self.reason)
 
+
+class RogueAP(CiscoPrimeBaseModel):
+    ssid = models.CharField(max_length=128)
+    mac = models.CharField(max_length=32)
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.ssid, self.mac)
+
+
+class TrackedRogue(CiscoPrimeBaseModel):
+    ap = models.ForeignKey(RogueAP)
+    booth_number = models.CharField(max_length=128, null=True, blank=True)
+    exhibitor_name = models.CharField(max_length=128, null=True, blank=True)
+    additional_info = models.TextField()
+
+    def __unicode__(self):
+        return "%s: %s (%s)" % (self.ap, self.exhibitor_name, self.booth_number)
+
