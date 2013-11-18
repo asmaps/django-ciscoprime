@@ -46,10 +46,17 @@
       </div>
     </div>
     <div class="container content wrap">
-        <div class="pull-left" style="padding-top:10px">
-            <a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a>
-        </div>
-        <div class="pull-right" style="padding-top:5px">
+        {% if request.GET.nonav %}
+            <div style="padding-top:5px"></div>
+            <div style="position:absolute;top:10px">
+                <a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a>
+            </div>
+        {% else %}
+            <div style="position:absolute;top:60px">
+                <a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a>
+            </div>
+        {% endif %}
+        <div class="pull-right">
             <a href="http://www.hft-stuttgart.de/"><img src="{% static 'img/Logo_HFT.jpg' %}" border="0" alt="Powered by Django." title="Powered by Django." /></a>
         </div>
       {% block content %}
