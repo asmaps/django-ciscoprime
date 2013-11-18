@@ -6,7 +6,7 @@ import requests
 import pprint
 import re
 
-from .utils import api_request, analyze_rogue_alert_msg
+from .utils import api_request, analyze_rogue_alert_msg, best_rssi_for_correlated
 
 
 class RogueDetailView(TemplateView):
@@ -50,7 +50,11 @@ class RoguesView(TemplateView):
             context['rogues_count'] = r['json_response']['queryResponse']['@count']
             for entity in r['json_response']['queryResponse']['entity']:
                 try:
-                    rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
+                    rogue = None
+                    if self.request.GET.get('showbest'):
+                        rogue = best_rssi_for_correlated(int(entity['alarmsDTO']['@id']))
+                    if not rogue:
+                        rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
                     rogue.update(
                         {'id': entity['alarmsDTO']['@id']}
                     )
