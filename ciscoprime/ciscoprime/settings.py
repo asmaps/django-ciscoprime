@@ -90,6 +90,9 @@ TEMPLATE_CONTEXT_PROCESSORS = DEFAULT_SETTINGS.TEMPLATE_CONTEXT_PROCESSORS + (
     'django.core.context_processors.request',
 )
 
+LOGIN_URL = 'accounts_login'
+LOGIN_REDIRECT_URL = 'overview'
+
 try:
     from .local_settings import *
 except ImportError:
