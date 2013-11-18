@@ -17,9 +17,16 @@ class FoundRogueView(LoginRequiredMixin, CreateView):
     template_name = 'main/found_rogue.html'
     model = TrackedRogue
 
+    def get_rogue(self):
+        return get_object_or_404(RogueAP, pk=self.kwargs.get('pk'))
+
     def get(self, request, *args, **kwargs):
-        self.rogue = get_object_or_404(RogueAP, pk=self.kwargs.get('pk'))
+        self.rogue = self.get_rogue()
         return super(FoundRogueView, self).get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        self.rogue = self.get_rogue()
+        return super(FoundRogueView, self).post(request, *args, **kwargs)
 
     def get_initial(self):
         return {

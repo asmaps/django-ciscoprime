@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.core.urlresolvers import reverse
+
 
 class CiscoPrimeBaseModelNoCreatedBy(models.Model):
     last_update = models.DateTimeField(auto_now=True)
@@ -44,6 +46,9 @@ class TrackedRogue(CiscoPrimeBaseModel):
     booth_number = models.CharField(max_length=128, null=True, blank=True)
     exhibitor_name = models.CharField(max_length=128, null=True, blank=True)
     additional_info = models.TextField()
+
+    def get_absolute_url(self):
+        return reverse('rogues')
 
     def __unicode__(self):
         return "%s: %s (%s)" % (self.ap, self.exhibitor_name, self.booth_number)
