@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="text-center">
-    <h3>Events for "{{ rogue.ssid }}" ({{ rogue.mac }})</h3>
+    <h3>Create TrackedRogue for "{{ rogue.ssid }}" ({{ rogue.mac }})</h3>
     {% if request.user.is_authenticated %}
         <div>
             <a href="{% url 'found_rogue' pk=rogue.pk %}" class="btn btn-lg btn-success">Found it!</a>
