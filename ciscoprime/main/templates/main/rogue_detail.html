@@ -5,10 +5,36 @@
 <div class="text-center">
     <h3>Events for "{{ rogue.ssid }}" ({{ rogue.mac }})</h3>
     {% if request.user.is_authenticated %}
-        <div>
-            <a href="{% url 'found_rogue' pk=rogue.pk %}" class="btn btn-lg btn-success">Found it!</a>
-        </div>
+        {% if rogue.trackedrogue_set.all %}
+            <h3>Tracking info</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Booth</th>
+                        <th>Exhibitor</th>
+                        <th>Additional Info</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tr in rogue.trackedrogue_set.all %}
+                        <tr>
+                            <td>{{ tr.booth_number }}</td>
+                            <td>{{ tr.exhibitor_name }}</td>
+                            <td>{{ tr.additional_info }}</td>
+                            <td><a href="{% url 'admin:main_trackedrogue_change' tr.pk %}">Show tracked rogue info</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <hr>
+        {% else %}
+            <div>
+                <a href="{% url 'found_rogue' pk=rogue.pk %}" class="btn btn-lg btn-success">Found it!</a>
+            </div>
+        {% endif %}
     {% endif %}
+    <h3>Detecting APs</h3>
     <table class="table">
         <thead>
             <tr>

@@ -36,6 +36,7 @@ class DisabledClient(CiscoPrimeBaseModel):
 class RogueAP(CiscoPrimeBaseModel):
     ssid = models.CharField(max_length=128)
     mac = models.CharField(max_length=32)
+    correlated = models.IntegerField()
 
     def __unicode__(self):
         return "%s (%s)" % (self.ssid, self.mac)
@@ -48,7 +49,7 @@ class TrackedRogue(CiscoPrimeBaseModel):
     additional_info = models.TextField()
 
     def get_absolute_url(self):
-        return reverse('rogues')
+        return reverse('rogue_detail', kwargs={'correlated': self.ap.correlated})
 
     def __unicode__(self):
         return "%s: %s (%s)" % (self.ap, self.exhibitor_name, self.booth_number)
