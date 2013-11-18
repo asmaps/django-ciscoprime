@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView, ListView, CreateView
 from django.conf import settings
 from django.db.models import Max
+from django.shortcuts import get_object_or_404
 
 from braces.views import LoginRequiredMixin
 import requests
@@ -12,9 +13,24 @@ from .models import ClientCount, DisabledClient, RogueAP, TrackedRogue
 from .utils import api_request, analyze_rogue_alert_msg, best_rssi_for_correlated
 
 
-class FoundRogueView(CreateView):
+class FoundRogueView(LoginRequiredMixin, CreateView):
     template_name = 'main/found_rogue.html'
     model = TrackedRogue
+
+    def get(self, request, *args, **kwargs):
+        self.rogue = get_object_or_404(RogueAP, pk=self.kwargs.get('pk'))
+        return super(FoundRogueView, self).get(request, *args, **kwargs)
+
+    def get_initial(self):
+        return {
+            'ap': self.rogue,
+            'created_by': self.request.user,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super(FoundRogueView, self).get_context_data(**kwargs)
+        context['rogue'] = self.rogue
+        return context
 
 
 class DisabledClientsView(ListView):

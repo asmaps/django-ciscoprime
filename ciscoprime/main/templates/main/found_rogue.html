@@ -1,37 +1,12 @@
 {% extends 'base.html' %}
-{% load status_tags %}
+{% load status_tags bootstrap %}
 
 {% block content %}
-<div class="text-center">
-    <h3>Create TrackedRogue for "{{ rogue.ssid }}" ({{ rogue.mac }})</h3>
-    {% if request.user.is_authenticated %}
-        <div>
-            <a href="{% url 'found_rogue' pk=rogue.pk %}" class="btn btn-lg btn-success">Found it!</a>
-        </div>
-    {% endif %}
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Time <a href="?sort=time"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
-                <th>Channel</th>
-                <th>Detecting SC13 AP <a href="?sort=detecting_ap"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
-                <th>Radio type</th>
-                <th>RSSI <a href="?sort=rssi"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% with request.GET.sort|default:'rssi' as sortby %}
-    {% for ap in events|dictsort:sortby %}
-            <tr>
-                <td>{{ ap.time }}</td>
-                <td>{{ ap.channel|default:'?' }}</td>
-                <td>{{ ap.detecting_ap }}</td>
-                <td>{{ ap.radio_type }}</td>
-                <td>{{ ap.rssi }}</td>
-            </tr>
-    {% endfor %}
-        {% endwith %}
-        </tbody>
-    </table>
+<div class="col-lg-6 col-lg-offset-3">
+    <h3>Create TrackedRogue for "{{ rogue }}"</h3>
+    <form role="form">
+        {{ form|bootstrap }}
+        <button type="submit" class="btn btn-success">Create</button>
+    </form>
 </div>
 {% endblock %}
