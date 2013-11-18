@@ -36,6 +36,8 @@
         <div class="col-lg-6 col-lg-offset-1 text-center well">
             <h1>Current wifi client count</h1>
             <h1><span class="big"><strong>{{ clients.count }}</strong></span></h1>
+            <h4>Max count in last 24 hours: <strong>{{ clients.max_count_24.count }}</strong> <small>({{ clients.max_count_24.created }})</small></h4>
+            <h4>Max count overall: <strong>{{ clients.max_count_overall.count }}</strong> <small>({{ clients.max_count_overall.created }})</small></h4>
         </div>
     </div>
     <hr>
