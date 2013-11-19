@@ -26,18 +26,24 @@
                     <th>Latest detecting SC13 AP <a href="?sort=detecting_ap"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
                     <th>Radio type</th>
                     <th>RSSI <a href="?sort=rssi"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+                    {% if request.user.is_authenticated %}
+                        <th>#TrackedRogues</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
             {% with request.GET.sort|default:'detecting_ap' as sortby %}
         {% for ap in rogues|dictsort:sortby %}
                 <tr>
-                    <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"hidden" }}</a></td>
+                    <td><a href="{% url 'rogue_detail' correlated=ap.id %}">{{ ap.ssid|default:"hidden" }}</td>
                     <td>{{ ap.mac }}</td>
                     <td>{{ ap.channel|default:'?' }}</td>
                     <td>{{ ap.detecting_ap }}</td>
                     <td>{{ ap.radio_type }}</td>
                     <td>{{ ap.rssi }}</td>
+                    {% if request.user.is_authenticated %}
+                        <td><a href="{% url 'rogue_detail' correlated=ap.id %}"><span class="label label-{{ ap.tracked_rogue_count|yesno:'danger,success' }}">{{ ap.tracked_rogue_count }}</span></a></td>
+                    {% endif %}
                 </tr>
         {% endfor %}
             {% endwith %}

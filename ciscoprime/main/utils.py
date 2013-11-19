@@ -3,6 +3,8 @@ from django.conf import settings
 import re
 import requests
 
+from .models import RogueAP
+
 
 def api_request(url):
     print 'api_request "%s"' % url
@@ -26,13 +28,19 @@ def analyze_rogue_alert_msg(msg):
     rogue = dict()
     m = rogue_reg.match(msg)
     if m:
+        try:
+            r = RogueAP.objects.get(ssid=m.group('ssid'), mac=m.group('mac'))
+            trc = r.trackedrogue_set.all().count()
+        except RogueAP.DoesNotExist:
+            trc = 0
         return {
             'ssid': m.group('ssid'),
             'mac': m.group('mac'),
             'channel': m.group('channel'),
             'detecting_ap': m.group('ap'),
             'radio_type': m.group('radio_type'),
-            'rssi': m.group('rssi')
+            'rssi': m.group('rssi'),
+            'tracked_rogue_count': trc,
         }
     else:
         raise ValueError('Message "%s" not decodable' % msg)
