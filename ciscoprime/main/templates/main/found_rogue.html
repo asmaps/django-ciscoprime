@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="col-lg-6 col-lg-offset-3">
-    <h3>Create TrackedRogue for "{{ rogue }}"</h3>
+    <h3>Create tracking info for "{{ rogue }}"</h3>
     <form role="form" action="{% url 'found_rogue' pk=rogue.pk %}" method="POST">
         {{ form|bootstrap }}
         {% csrf_token %}
