@@ -3,7 +3,7 @@ from django.conf import settings
 import re
 import requests
 
-from .models import RogueAP
+from .models import RogueAP, TrackedRogue
 
 
 def api_request(url):
@@ -28,20 +28,22 @@ def analyze_rogue_alert_msg(msg):
     rogue = dict()
     m = rogue_reg.match(msg)
     if m:
-        try:
-            r = RogueAP.objects.get(ssid=m.group('ssid'), mac=m.group('mac'))
-            trc = r.trackedrogue_set.all().count()
-        except RogueAP.DoesNotExist:
-            trc = 0
-        return {
+        rogue = {
             'ssid': m.group('ssid'),
             'mac': m.group('mac'),
             'channel': m.group('channel'),
             'detecting_ap': m.group('ap'),
             'radio_type': m.group('radio_type'),
             'rssi': m.group('rssi'),
-            'tracked_rogue_count': trc,
         }
+        (rap, created) = RogueAP.objects.get_or_create(mac=rogue['mac'], defaults={'correlated': 0, 'ssid': rogue['ssid']})
+        if rogue['ssid'] and not rogue['ssid'] == rap.ssid:
+            TrackedRogue.objects.create(ap=rap, additional_info='Changed ssid from "%s" to "%s"' % (rap.ssid, rogue['ssid']))
+            rap.ssid = rogue['ssid']
+        rap.save()
+        rogue['rogue_obj'] = rap
+        rogue['tracked_rogue_count'] = rap.trackedrogue_set.all().count()
+        return rogue
     else:
         raise ValueError('Message "%s" not decodable' % msg)
 

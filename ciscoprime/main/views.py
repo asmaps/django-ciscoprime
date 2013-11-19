@@ -8,6 +8,7 @@ import requests
 import pprint
 import re
 import datetime
+from dateutil import parser
 
 from .models import ClientCount, DisabledClient, RogueAP, TrackedRogue
 from .utils import api_request, analyze_rogue_alert_msg, best_rssi_for_correlated
@@ -59,12 +60,10 @@ class RogueDetailView(TemplateView):
         if r.get('json_response'):
             for entity in r['json_response']['queryResponse']['entity']:
                 try:
-                    event = analyze_rogue_alert_msg(entity['eventsDTO']['description'])
-                    event.update(
-                        {'id': entity['eventsDTO']['@id'],
-                        'time': entity['eventsDTO']['timeStamp']}
-                    )
-                    context['events'].append(event)
+                    rogue = analyze_rogue_alert_msg(entity['eventsDTO']['description'])
+                    rogue['id'] = entity['eventsDTO']['@id']
+                    rogue['time'] = parser.parse(entity['eventsDTO']['timeStamp'])
+                    context['events'].append(rogue)
                 except ValueError:
                     #FIXME
                     print 'Non decodable rogue message "%s".'
@@ -75,14 +74,12 @@ class RogueDetailView(TemplateView):
             entity = r['json_response']['queryResponse']['entity'][0]
             try:
                 rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
-                rogue.update(
-                    {'id': entity['alarmsDTO']['@id'],
-                    'time': entity['alarmsDTO']['timeStamp']}
-                )
+                rogue['id'] = entity['alarmsDTO']['@id']
+                rogue['time'] = parser.parse(entity['alarmsDTO']['timeStamp'])
+                rogue['rogue_obj'].correlated = entity['alarmsDTO']['@id']
+                rogue['rogue_obj'].save()
                 context['events'].append(rogue)
-                (context['rogue'], created) = RogueAP.objects.get_or_create(ssid=rogue['ssid'], mac=rogue['mac'], defaults={'correlated': entity['alarmsDTO']['@id']})
-                context['rogue'].correlated = entity['alarmsDTO']['@id']
-                context['rogue'].save()
+                context['rogue'] = rogue['rogue_obj']
             except ValueError:
                 #FIXME
                 print 'Non decodable rogue message "%s".'
@@ -109,9 +106,9 @@ class RoguesView(TemplateView):
                         rogue = best_rssi_for_correlated(int(entity['alarmsDTO']['@id']))
                     if not rogue:
                         rogue = analyze_rogue_alert_msg(entity['alarmsDTO']['message'])
-                    rogue.update(
-                        {'id': entity['alarmsDTO']['@id']}
-                    )
+                    rogue['id'] = entity['alarmsDTO']['@id']
+                    rogue['rogue_obj'].correlated = entity['alarmsDTO']['@id']
+                    rogue['rogue_obj'].save()
                     rogues.append(rogue)
                 except ValueError:
                     #FIXME
