@@ -99,7 +99,7 @@ class RoguesView(TemplateView):
         context['rogues'] = list()
         rogues = list()
         r = api_request(
-            'https://140.221.243.254/webacs/api/v1/data/Alarms.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")&.full=true')
+            'https://140.221.243.254/webacs/api/v1/data/Alarms.json?category.value="Rogue AP"&condition.value="UNCLASSIFIED_ROGUE_AP_DETECTED"&severity=ne("CLEARED")&.full=true&.maxResults=1000')
         if r.get('json_response'):
             context['rogues_count'] = r['json_response']['queryResponse']['@count']
             for entity in r['json_response']['queryResponse']['entity']:
