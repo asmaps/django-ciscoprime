@@ -3,12 +3,23 @@
 
 {% block content %}
 <div class="text-center bigtext">
-    <h1>WIFI status overview</h1>
-    <hr>
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-2 text-center">
+            <h1>WIFI status overview</h1>
+        </div>
+    </div>
 {% if ctrl.error %}
     <h3>{{ ctrl.error }}</h3>
     <p>{{ ctrl.error_detail }}
 {% else %}
+    <hr>
+    <div class="row">
+        <div class="col-lg-12 text-center">
+            <h1 id="shutdown-hint" style="padding:10px"><span class="label label-danger" style="font-size:46px">Please use SC13 wifi and shutdown your hotspot.</span></h1>
+            <h1>Thank you!</h1>
+        </div>
+    </div>
+    <hr>
     <div class="row">
         <div class="col-lg-5 text-center">
             {% with ctrl.entity.wlanControllersDTO as ctrl %}
@@ -76,4 +87,16 @@
     </div>
 {% endif %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function toggle() {
+            $('#shutdown-hint').fadeToggle('slow');
+            setTimeout(toggle, 1);
+        }
+        $(function (){
+            toggle();
+        });
+    </script>
 {% endblock %}

@@ -4,9 +4,9 @@
 {% block content %}
 <div class="text-center">
     <div class="row">
-        <div class="col-lg-6 col-lg-offset-3 text-center well">
+        <div class="col-lg-8 col-lg-offset-2 text-center well">
             <h1><span class="label label-{{ rogues_count|yesno:'danger,success' }}">{{ rogues_count }}</span> Rogue AP{{ rogues_count|pluralize }} detected</h1>
-            Please use SC13 wifi and shutdown your own wifi.<br>
+            <h1 id="shutdown-hint"><span class="label label-danger">Please use SC13 wifi and shutdown your own wifi.</span></h1>
             Thank you!
         </div>
     </div>
@@ -51,4 +51,16 @@
         </table>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function toggle() {
+            $('#shutdown-hint').fadeToggle('slow');
+            setTimeout(toggle, 1);
+        }
+        $(function (){
+            toggle();
+        });
+    </script>
 {% endblock %}
