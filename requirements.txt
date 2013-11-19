@@ -3,3 +3,4 @@ requests
 django-braces
 django-bootstrap-form
 south
+python-dateutil
