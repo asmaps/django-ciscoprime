@@ -44,6 +44,7 @@
         <thead>
             <tr>
                 <th>Time <a href="?sort=time"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
+                <th>SSID</th>
                 <th>Channel</th>
                 <th>Detecting SC13 AP <a href="?sort=detecting_ap"><span class="glyphicon glyphicon-chevron-down"></span></a></th>
                 <th>Radio type</th>
@@ -55,6 +56,7 @@
     {% for ap in events|dictsort:sortby %}
             <tr>
                 <td>{{ ap.time }}</td>
+                <td>{{ ap.ssid }}</td>
                 <td>{{ ap.channel|default:'?' }}</td>
                 <td>{{ ap.detecting_ap }}</td>
                 <td>{{ ap.radio_type }}</td>
