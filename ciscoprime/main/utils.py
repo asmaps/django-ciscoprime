@@ -37,7 +37,7 @@ def analyze_rogue_alert_msg(msg):
             'rssi': m.group('rssi'),
         }
         (rap, created) = RogueAP.objects.get_or_create(mac=rogue['mac'], defaults={'correlated': 0, 'ssid': rogue['ssid']})
-        if rogue['ssid'] and not rogue['ssid'] == rap.ssid:
+        if not rogue['ssid'] and not rogue['ssid'] == rap.ssid:
             TrackedRogue.objects.create(ap=rap, additional_info='Changed ssid from "%s" to "%s"' % (rap.ssid, rogue['ssid']))
             rap.ssid = rogue['ssid']
         rap.save()

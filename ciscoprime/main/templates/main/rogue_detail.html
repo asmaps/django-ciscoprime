@@ -10,6 +10,7 @@
             <table class="table">
                 <thead>
                     <tr>
+                        <th>Time</th>
                         <th>Booth</th>
                         <th>Exhibitor</th>
                         <th>Additional Info</th>
@@ -19,6 +20,7 @@
                 <tbody>
                     {% for tr in rogue.trackedrogue_set.all %}
                         <tr>
+                            <td>{{ tr.last_update }}</td>
                             <td>{{ tr.booth_number }}</td>
                             <td>{{ tr.exhibitor_name }}</td>
                             <td>{{ tr.additional_info }}</td>
